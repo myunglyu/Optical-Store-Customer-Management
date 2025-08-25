@@ -176,3 +176,106 @@ $RECYCLE.BIN/
 .fake
 
 WooriOpticalCustomerManagement/
+
+OSX_Build/
+
+# ===== XCODE / iOS / macOS =====
+
+# Xcode
+*.xcworkspace
+!*.xcworkspace/contents.xcworkspacedata
+!*.xcworkspace/xcshareddata/
+*.xcuserdata
+*.xcscmblueprint
+*.xccheckout
+
+# Build generated
+build/
+DerivedData/
+
+# Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+
+# Other
+*.moved-aside
+*.xcuserstate
+
+# CocoaPods
+Pods/
+*.xcworkspace
+
+# Carthage
+Carthage/Build
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Injection
+iOSInjectionProject/
+
+# Swift Package Manager
+.swiftpm/
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+
+# Xcode Patch
+*.xcodeproj/
+
+# App Store Connect API
+private_keys/
+AuthKey_*.p8
+
+# Simulator
+*.app.dSYM.zip
+*.app.dSYM
+
+# Provisioning
+*.mobileprovision
+*.cer
+*.p12
+*.certSigningRequest
+
+# TestFlight
+*.ipa
+
+# Archive
+*.xcarchive
+
+# SwiftUI Previews
+**/PreviewContent/
+
+# Xcode Instruments
+*.trace
+
+# Interface Builder
+*.storyboard
+*.xib
+
+# Core Data
+*.xcdatamodeld
+*.xcdatamodel
+
+# Temporary Xcode files
+*~.nib
+
+# Auto-generated files
+*.strings
+
+# Mac App Store
+*.pkg
+
+# macOS Installer
+*.mpkg
+
+# Apple Development certificates and profiles
+AppleDeveloper/

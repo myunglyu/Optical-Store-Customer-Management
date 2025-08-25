@@ -128,8 +128,27 @@ using (var scope = app.Services.CreateScope())
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var logger = scope.ServiceProvider.GetService<ILoggerFactory>()?.CreateLogger("SeedAdmin");
-    var adminJsonPath = Path.Combine(AppContext.BaseDirectory, "admin.json");
-    if (File.Exists(adminJsonPath))
+    
+    // Try multiple possible locations for admin.json
+    var possiblePaths = new[]
+    {
+        Path.Combine(Directory.GetCurrentDirectory(), "admin.json"),
+        Path.Combine(AppContext.BaseDirectory, "admin.json"),
+        Path.Combine(builder.Environment.ContentRootPath, "admin.json")
+    };
+    
+    string? adminJsonPath = null;
+    foreach (var path in possiblePaths)
+    {
+        if (File.Exists(path))
+        {
+            adminJsonPath = path;
+            logger?.LogInformation("Found admin.json at: {Path}", path);
+            break;
+        }
+    }
+    
+    if (adminJsonPath != null)
     {
         try
         {
@@ -141,8 +160,11 @@ using (var scope = app.Services.CreateScope())
                 var userName = root.GetProperty("UserName").GetString();
                 var email = root.TryGetProperty("Email", out var emailProp) ? emailProp.GetString() : null;
                 var password = root.GetProperty("Password").GetString();
+                
                 if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
                 {
+                    logger?.LogInformation("Creating admin user: {UserName}", userName);
+                    
                     // Ensure Admin role exists
                     var adminRoleExists = await roleManager.RoleExistsAsync("Admin");
                     if (!adminRoleExists)
@@ -153,6 +175,7 @@ using (var scope = app.Services.CreateScope())
                             logger?.LogError("Failed to create Admin role: {Errors}", string.Join(", ", roleResult.Errors.Select(e => e.Description)));
                             throw new Exception($"Failed to create Admin role: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
                         }
+                        logger?.LogInformation("Created Admin role");
                     }
 
                     var managerRoleExists = await roleManager.RoleExistsAsync("Manager");
@@ -164,6 +187,7 @@ using (var scope = app.Services.CreateScope())
                             logger?.LogError("Failed to create Manager role: {Errors}", string.Join(", ", roleResult.Errors.Select(e => e.Description)));
                             throw new Exception($"Failed to create Manager role: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
                         }
+                        logger?.LogInformation("Created Manager role");
                     }
 
                     var UserRoleExists = await roleManager.RoleExistsAsync("User");
@@ -175,6 +199,7 @@ using (var scope = app.Services.CreateScope())
                             logger?.LogError("Failed to create User role: {Errors}", string.Join(", ", roleResult.Errors.Select(e => e.Description)));
                             throw new Exception($"Failed to create User role: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
                         }
+                        logger?.LogInformation("Created User role");
                     }
 
                     var adminUser = await userManager.FindByNameAsync(userName);
@@ -188,6 +213,7 @@ using (var scope = app.Services.CreateScope())
                             throw new Exception($"Failed to create admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                         }
                         await userManager.AddToRoleAsync(user, "Admin");
+                        logger?.LogInformation("Successfully created admin user: {UserName}", userName);
                     }
                     else
                     {
@@ -195,15 +221,24 @@ using (var scope = app.Services.CreateScope())
                         if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
                         {
                             await userManager.AddToRoleAsync(adminUser, "Admin");
+                            logger?.LogInformation("Added Admin role to existing user: {UserName}", userName);
                         }
                     }
+                }
+                else
+                {
+                    logger?.LogWarning("admin.json missing required UserName or Password fields");
                 }
             }
         }
         catch (Exception ex)
         {
-            logger?.LogError(ex, "Failed to read or parse admin.json");
+            logger?.LogError(ex, "Failed to read or parse admin.json from: {Path}", adminJsonPath);
         }
+    }
+    else
+    {
+        logger?.LogWarning("admin.json not found in any of the expected locations: {Paths}", string.Join(", ", possiblePaths));
     }
 }
 
