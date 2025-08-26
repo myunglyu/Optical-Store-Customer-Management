@@ -44,7 +44,7 @@ public class AccountController : Controller
         {
             TempData["Message"] = "Password changed successfully.";
             await _signInManager.RefreshSignInAsync(user);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Admin");
         }
         foreach (var error in result.Errors)
         {
