@@ -106,15 +106,6 @@ struct SimpleWebView: NSViewRepresentable {
     func makeNSView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         
-        // Use modern API instead of deprecated javaScriptEnabled
-        if #available(macOS 11.0, *) {
-            // JavaScript is enabled by default in modern WKWebView
-            // We can control it per-navigation if needed in the delegate
-        } else {
-            // Fallback for older versions
-            config.preferences.javaScriptEnabled = true
-        }
-        
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = true
@@ -157,16 +148,6 @@ struct SimpleWebView: NSViewRepresentable {
                 self.parent.isLoading = false
             }
             print("WebView navigation failed: \(error.localizedDescription)")
-        }
-        
-        // Optional: Control JavaScript on a per-navigation basis if needed
-        @available(macOS 11.0, *)
-        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
-            
-            // Enable JavaScript for all navigations (this is the default behavior)
-            preferences.allowsContentJavaScript = true
-            
-            decisionHandler(.allow, preferences)
         }
     }
 }
