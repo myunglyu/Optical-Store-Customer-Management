@@ -11,6 +11,7 @@ This is a production-ready, secure customer management system for optical stores
 - Admin account seeded from `admin.json` at build
 - Local-only access (no remote connections allowed)
 - WinForms + WebView2 desktop host
+- Electron for multi-platform support
 - Single-file, self-contained deployment
 - Print support
 
@@ -43,12 +44,14 @@ This is a production-ready, secure customer management system for optical stores
    dotnet ef database drop -f --project WooriOptical/WooriOptical.csproj
    dotnet ef database update --project WooriOptical/WooriOptical.csproj
    ```
+   
 5. **Run the backend app**
    ```powershell
    dotnet run --project WooriOptical/WooriOptical.csproj
    ```
-   - The app will be available at `https://localhost:5001` (or as configured).
+   - The app will be available at `https://localhost:500` (or as configured).
    - Only local access is allowed.
+   - Copy woorioptical.db to the debug folder
 
 6. **Run the desktop app**
    ```powershell
