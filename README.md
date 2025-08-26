@@ -11,7 +11,7 @@ This is a production-ready, secure customer management system for optical stores
 - Admin account seeded from `admin.json` at build
 - Local-only access (no remote connections allowed)
 - WinForms + WebView2 desktop host
-- Electron for multi-platform support
+- Electron for multi-platform application build
 - Single-file, self-contained deployment
 - Print support
 
