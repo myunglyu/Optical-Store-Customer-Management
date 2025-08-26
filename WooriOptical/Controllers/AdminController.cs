@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using WooriOptical.Models;
 using WooriOptical.Services;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Runtime.CompilerServices;
 
 namespace WooriOptical.Controllers;
 
@@ -213,11 +214,17 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult ManageBackups()
     {
+        if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "Backups")))
+        {
+            TempData["Message"] = "No backups available.";
+            return RedirectToAction("Index");
+        }
+
         var backups = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "Backups"), "*.db")
             .Select(Path.GetFileName)
             .ToList();
 
-        if (!backups.Any())
+        if (backups.Count == 0)
         {
             TempData["Message"] = "No backups available.";
             return RedirectToAction("Index");
@@ -252,10 +259,22 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult RestoreDatabase()
     {
+        if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "Backups")))
+        {
+            TempData["Message"] = "No backups available.";
+            return RedirectToAction("Index");
+        }
+
         var backups = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "Backups"), "*.db")
             .Select(Path.GetFileName)
             .ToList();
 
+        if (backups.Count == 0)
+        {
+            TempData["Message"] = "No backups available.";
+            return RedirectToAction("Index");
+        }
+        
         return View(backups);
     }
 

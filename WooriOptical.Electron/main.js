@@ -12,6 +12,7 @@ function createWindow() {
       contextIsolation: true
     }
   });
+  win.setMenuBarVisibility(false);
   win.loadURL('http://localhost:5000');
 }
 
