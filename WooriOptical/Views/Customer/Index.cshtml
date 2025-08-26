@@ -1,5 +1,12 @@
 @model IEnumerable<WooriOptical.Models.CustomerViewModel>
 
+@{
+    ViewData["Title"] = "Customer List";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr>
+
 <a asp-action="Create" class="btn btn-primary">Create New Customer</a>
 
 <table class="table table-striped">

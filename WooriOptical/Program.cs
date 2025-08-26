@@ -105,6 +105,7 @@ app.Use(async (context, next) =>
 
 app.UseHttpsRedirection();
 app.UseResponseCaching();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
